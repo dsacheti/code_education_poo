@@ -1,7 +1,10 @@
 <?php    
-    //require_once'cliente.php';
-    require_once 'dadosClientes.php';
-    $dados = new dadosClientes();
+    
+    define('CLASS_DIR','../src/');
+	set_include_path(get_include_path().PATH_SEPARATOR.CLASS_DIR);
+	spl_autoload_register();    
+    $dados = new ds\clientes\dadosClientes();
+    
    if(isset($_GET['ord'])&& $_GET['ord'] !=null){
        $g_ord = $_GET['ord'];
        if($g_ord==1 && $g_ord != $dados->getOrdem()){
@@ -18,7 +21,7 @@
         <title>Listagem de clientes</title>
         <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.6/css/bootstrap.min.css">
         <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.6/css/bootstrap-theme.min.css">
-        <link rel="stylesheet" href="css/estilo.css">
+        
         <!-- HTML5 shim and Respond.js for IE8 support of HTML5 elements and media queries -->
     <!-- WARNING: Respond.js doesn't work if you view the page via file:// -->
     <!--[if lt IE 9]>
