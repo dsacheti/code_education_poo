@@ -1,7 +1,8 @@
 <?php
-namespace ds\clientes;
+namespace ds\clientes\utils;
 interface importancia {
      public function setImportancia($nivel);
      public function getImportancia();
  
 }
+?>
