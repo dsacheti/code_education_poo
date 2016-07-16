@@ -23,4 +23,8 @@ class clientePJ extends pessoa {
     public function getCnpj(){
         return $this->cnpj;
     }
+	
+	public function setCnpj($doc){
+		$this->cnpj = $doc;
+	}
 }

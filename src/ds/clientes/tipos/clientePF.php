@@ -23,4 +23,8 @@ class clientePF extends pessoa {
     public function getCpf(){
         return $this->cpf;
     }
+	
+	public function setCpf($doc){
+		$this->cpf = $doc;
+	}
 }
