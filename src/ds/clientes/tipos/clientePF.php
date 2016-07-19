@@ -5,7 +5,7 @@ use \ds\clientes\tipos\pessoa;
 
 class clientePF extends pessoa {
     private $cpf;
-    private $tipo = self::PESSOA_FISICA;
+    private $tipo = "pf";
     
     public function __construct($id,$nome, $cpf, $endereco,$telefone,$importancia) {
         $this->id = $id;

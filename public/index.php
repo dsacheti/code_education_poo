@@ -2,8 +2,13 @@
 define('CLASS_DIR','../src/');
 set_include_path(get_include_path().PATH_SEPARATOR.CLASS_DIR);
 spl_autoload_register();    
-$dados = new ds\clientes\dao\clientesDAO();
-$dados->getClientes();//cria o array de clientes no objeto
+$dados = new ds\clientes\dao\fixture();
+//$dados->getClientes();//cria o array de clientes no objeto
+if($dados){
+    echo "Fixture criada com sucesso - banco e tabelas OK";
+}
+$dados->setClientes();
+$dados->inserirDados();
 ?>
 
 <!doctype html>
@@ -32,19 +37,19 @@ $dados->getClientes();//cria o array de clientes no objeto
     <body>
 
 <?php
-$id = filter_input(INPUT_GET, 'id');
-if($id  !=NULL){
-    
-    //---------DETALHES DO CLIENTE-------------
-        require_once 'detalhes.php';
-    //---------FIM DOS DETALHES DO CLIENTE------------
-}else{//lista de clientes    
-    $ordem = filter_input(INPUT_GET,'ord');
-    if($ordem !=NULL){
-        if($ordem != $dados->getOrdem()){
-            $dados->ordenaInverso();
-        }
-    }
+//$id = filter_input(INPUT_GET, 'id');
+//if($id  !=NULL){
+//    
+//    //---------DETALHES DO CLIENTE-------------
+//        require_once 'detalhes.php';
+//    //---------FIM DOS DETALHES DO CLIENTE------------
+//}else{//lista de clientes    
+//    $ordem = filter_input(INPUT_GET,'ord');
+//    if($ordem !=NULL){
+//        if($ordem != $dados->getOrdem()){
+//            $dados->ordenaInverso();
+//        }
+//    }
     ?>
     <div class="container">
             <header>
@@ -55,23 +60,23 @@ if($id  !=NULL){
         <div class="container principal">
             <div class="col-xs-6 col-xs-offset-3">
             <?php
-            $linha = 1;
-                for($i=0; $i<$dados->num; $i++){
-                    $cli = $dados->getCliente($i);
-                    echo '<div class="col-xs-12 col-sm-6 text-center">'.
-                        '<div class="col-sm-1"></div>
-                        <div class="col-sm-10 item">
-                            <a href=index.php?id='.$cli->getId().'>'.$cli->getId().': '.$cli->getNome().'</a>
-                        </div>
-                        <div class="col-sm-1"></div>'.
-                    '</div>';
-                    
-                    if($linha%2 == 0){
-                        echo '</div><div class="col-xs-6 col-xs-offset-3">';
-                    }
-                    $linha++;
-                }
-                
+//            $linha = 1;
+//                for($i=0; $i<$dados->num; $i++){
+//                    $cli = $dados->getCliente($i);
+//                    echo '<div class="col-xs-12 col-sm-6 text-center">'.
+//                        '<div class="col-sm-1"></div>
+//                        <div class="col-sm-10 item">
+//                            <a href=index.php?id='.$cli->getId().'>'.$cli->getId().': '.$cli->getNome().'</a>
+//                        </div>
+//                        <div class="col-sm-1"></div>'.
+//                    '</div>';
+//                    
+//                    if($linha%2 == 0){
+//                        echo '</div><div class="col-xs-6 col-xs-offset-3">';
+//                    }
+//                    $linha++;
+//                }
+//                
             ?>
                 
             </div><!--row-->
@@ -81,7 +86,7 @@ if($id  !=NULL){
     <div class="col-xs-12 text-center"><a class="btn btn-success" href="index.php?ord=0">Ordem Crescente</a><a class="btn btn-success" href="index.php?ord=1">Ordem Decrescente</a></div>
   </div>
     <?php
-}//fim da apresentação da lista da clientes
+//}//fim da apresentação da lista da clientes
 ?>
  
     <script src="https://ajax.googleapis.com/ajax/libs/jquery/1.11.3/jquery.min.js"></script>

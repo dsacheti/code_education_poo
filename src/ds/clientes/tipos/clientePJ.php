@@ -5,7 +5,7 @@ use \ds\clientes\tipos\pessoa;
 
 class clientePJ extends pessoa {
     private $cnpj;
-    private $tipo = self::PESSOA_JURIDICA;
+    private $tipo = "pj";
     
     public function __construct($id,$nome, $cnpj, $endereco,$telefone,$importancia) {
         $this->id = $id;
@@ -24,7 +24,7 @@ class clientePJ extends pessoa {
         return $this->cnpj;
     }
 	
-	public function setCnpj($doc){
-		$this->cnpj = $doc;
-	}
+    public function setCnpj($doc){
+        $this->cnpj = $doc;
+    }
 }

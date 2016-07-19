@@ -10,9 +10,7 @@ namespace ds\clientes\tipos;
 
 use \ds\clientes\utils\endereco_cobranca_cliente;
 use \ds\clientes\utils\importancia;
-abstract class pessoa implements endereco_cobranca_cliente,importancia{
-    const PESSOA_FISICA = 1;
-    const PESSOA_JURIDICA = 2;
+class pessoa implements endereco_cobranca_cliente,importancia{
     protected $nome;
     protected  $endereco;
     protected  $telefone;
@@ -22,6 +20,7 @@ abstract class pessoa implements endereco_cobranca_cliente,importancia{
     protected  $cob_numero;
     protected  $cob_cidade;
     protected  $cob_cep;    
+
     
     public function getEndereco() {
         return $this->endereco;
