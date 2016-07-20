@@ -14,17 +14,18 @@ class fixture{
     public function __construct() {
         $sql = "CREATE DATABASE IF NOT EXISTS bd_cli;
         use bd_cli;
-        CREATE TABLE `bd_cli`.`pessoas` ( `id` SMALLINT NOT NULL , `nome` VARCHAR(50) NOT NULL , `endereco` VARCHAR(150) NOT NULL , `fone` VARCHAR(15) NULL , `importancia` INT(1) NOT NULL , PRIMARY KEY (`id`(11))) ENGINE = InnoDB;
-        CREATE TABLE `bd_cli`.`pessoa_fisica` ( `id` SMALLINT NOT NULL AUTO_INCREMENT , `codigo_pessoa` SMALLINT(11) NULL , PRIMARY KEY (`id`(11))) ENGINE = InnoDB;
-        CREATE TABLE `bd_cli`.`pessoa_juridica` ( `id` SMALLINT NOT NULL AUTO_INCREMENT, `codigo_pessoa` SMALLINT(11) NULL , PRIMARY KEY (`id`(11))) ENGINE = InnoDB;
-        CREATE TABLE `bd_cli`.`endereco_cobranca` ( `id` SMALLINT NOT NULL AUTO_INCREMENT , `codigo_pessoa` SMALLINT(11) NOT NULL, `log` VARCHAR(100) NOT NULL, `num` VARCHAR(5) NOT NULL, `cidade`VARCHAR(70) NOT NULL, `cep` VARCHAR(10) NULL, PRIMARY KEY (`id`(11))) ENGINE = InnoDB;
-        DELETE FROM pessoas;
-        DELETE FROM pessoa_juridica;
-        DELETE FROM pessoa_fisica;
-        DELETE FROM endereco_cobranca;
+        CREATE TABLE `bd_cli`.`pessoas` ( `id` INT NOT NULL , `nome` VARCHAR(70) NOT NULL , `endereco` VARCHAR(150) NOT NULL , `telefone` VARCHAR(20) NOT NULL , `importancia` TINYINT(1) NOT NULL , PRIMARY KEY (`id`)) ENGINE = InnoDB;
+        CREATE TABLE `bd_cli`.`pessoa_fisica` ( `id` INT NOT NULL AUTO_INCREMENT , `codigo_pessoa` INT(11) NOT NULL , PRIMARY KEY (`id`)) ENGINE = InnoDB;
+        CREATE TABLE `bd_cli`.`pessoa_juridica` ( `id` INT NOT NULL AUTO_INCREMENT , `codigo_pessoa` INT(11) NOT NULL , PRIMARY KEY (`id`)) ENGINE = InnoDB;
+        CREATE TABLE `bd_cli`.`endereco_cobranca` ( `id` INT(11) NOT NULL AUTO_INCREMENT , `codigo_pessoa` INT(11) NOT NULL , `log` VARCHAR(100) NOT NULL , `num` VARCHAR(7) NOT NULL , `cidade` VARCHAR(70) NOT NULL , `cep` VARCHAR(10) NOT NULL , PRIMARY KEY (`id`)) ENGINE = InnoDB;
+        DELETE FROM `pessoas`;
+        DELETE FROM `pessoa_juridica`;
+        DELETE FROM `pessoa_fisica`;
+        DELETE FROM `endereco_cobranca`;
         ";
-        $bd = new conexao();
-        $stmt = $bd->prepare($sql);
+        $con = new conexao();
+        $this->bd = $con->getConection();
+        $stmt = $this->bd->prepare($sql);
         $stmt->execute();
     }
     
@@ -48,31 +49,45 @@ class fixture{
         $this->ordem = 0;
     }
     
-    public function inserirDados(){
+    public function inserirPessoas(){
         $sqlPessoas = "INSERT INTO pessoas (id,nome,endereco,fone,importancia) VALUES(:id,:nome,:endereco,:fone,:importancia)";
-        $stmtPessoas = $this->bd->prepare($sqlPessoas);
-        
-        $sqlPF = "INSERT INTO pessoa_fisica (codigo_pessoa) VALUES(:codigo_pessoa)";
-        $stmtPF = $this->bd->prepare($sqlPF);
-        
-        $sqlPJ ="INSERT INTO pessoa_juridica(codigo_pessoa) VALUES(:codigo_pessoa)"; 
-        $stmtPJ =$this->bd->prepare($sqlPJ);
-        
-        $sqlCobranca = "INSERTO INTO endereco_cobranca(codigo_pessoa,log,num,cidade,cep) VALUES(:codigo_pessoa,:log,:num,:cidade,:cep)";
-        $stmtCobranca = $this->bd->prepare($sqlCobranca);
-        
+        $stmtPessoas = $this->bd->prepare($sqlPessoas);  
+        echo '<table>';
         foreach($this->clientes as $cliente){
-               $stmtPessoas->execute(array(':id'=>$cliente->getId(),':nome'=>$cliente->getNome(),':endereco'=>$cliente->getEndereco(),':fone'=>$cliente->getTelefone(),':importancia'=>$cliente->getImportancia()));
+            try{
+              $stmtPessoas->execute(array(':id'=>$cliente->getId(),':nome'=>$cliente->getNome(),':endereco'=>$cliente->getEndereco(),':fone'=>$cliente->getTelefone(),':importancia'=>$cliente->getImportancia()));
+               echo '<tr><td>'.$cliente->getNome().'</td><td>'.$cliente->getEndereco().'</td><td>'.$cliente->getTelefone().'</td><td>'.$cliente->getImportancia().'</td></tr>';
+            }  catch (Exception $ex){
+                echo "Erro ao inserir pessoa:".$ex->getMessage();
+            }
            if($cliente instanceof pf){
-               $stmtPF->execute(array(':codigo_pessoa'=>$cliente->getId()));
+               $this->inserirPF($cliente);
            }else if($cliente instanceof pj){
-               $stmtPJ->execute(array(':codigo_pessoa'=>$cliente->getId()));
+               $this->inserirPJ($cliente);
            }
            $arrayCobranca = $cliente->getEnderecoCobranca();
            if(!empty($arrayCobranca[0])){
-               $stmtCobranca->execute(array(':codigo_pessoa'=>$cliente->getId(),':log'=>$arrayCobranca[0],':num'=>$arrayCobranca[1],':cidade'=>$arrayCobranca[2],':cep'=>$arrayCobranca[3]));
-           }
+                $this->inserirEnderecoCobranca($arrayCobranca, $cliente->getId());
+            }
         }
+        echo '</table>';
+    }
+    public function inserirPJ(pj $pj){
+        $sqlPJ ="INSERT INTO pessoa_juridica(codigo_pessoa) VALUES(:codigo_pessoa)"; 
+        $stmtPJ =$this->bd->prepare($sqlPJ);
+        $stmtPJ->execute(array(':codigo_pessoa'=>$pj->getId()));
+    }
+    
+    public function inserirPF(pf $pf){
+        $sqlPF = "INSERT INTO pessoa_fisica (codigo_pessoa) VALUES(:codigo_pessoa)";
+        $stmtPF = $this->bd->prepare($sqlPF);
+        $stmtPF->execute(array(':codigo_pessoa'=>$pf->getId()));
+    }
+    
+    public function inserirEnderecoCobranca(array $cobranca,$id){
+        $sqlCobranca = "INSERTO INTO endereco_cobranca(codigo_pessoa,log,num,cidade,cep) VALUES(:codigo_pessoa,:log,:num,:cidade,:cep)";
+        $stmtCobranca = $this->bd->prepare($sqlCobranca);
+        $stmtCobranca->execute(array(':codigo_pessoa'=>$id,':log'=>$cobranca[0],':num'=>$cobranca[1],':cidade'=>$cobranca[2],':cep'=>$cobranca[3]));
     }
 }
 

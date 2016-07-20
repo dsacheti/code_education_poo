@@ -4,11 +4,9 @@ set_include_path(get_include_path().PATH_SEPARATOR.CLASS_DIR);
 spl_autoload_register();    
 $dados = new ds\clientes\dao\fixture();
 //$dados->getClientes();//cria o array de clientes no objeto
-if($dados){
-    echo "Fixture criada com sucesso - banco e tabelas OK";
-}
+
 $dados->setClientes();
-$dados->inserirDados();
+$dados->inserirPessoas();
 ?>
 
 <!doctype html>
