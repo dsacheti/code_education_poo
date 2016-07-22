@@ -16,7 +16,7 @@ class clientesDAO {
     
     public function __construct() {
         try{
-           $this->bd = new PDO("mysql:host=localhost;dbname=bd_cli","dsacheti","99894904",  [PDO::MYSQL_ATTR_INIT_COMMAND => "SET NAMES 'utf8'"]); 
+           $this->bd = new PDO("mysql:host=localhost;dbname=bd_cli","root","",  [PDO::MYSQL_ATTR_INIT_COMMAND => "SET NAMES 'utf8'"]); 
         } catch (PDOException $ex) {
             die("Erro na conexao: ".$ex->getMessage()."\n".$ex->getTraceAsString());
         }
